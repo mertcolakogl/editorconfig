@@ -1,0 +1,132 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Task Runner: Reformat Code",
+      "detail": "dotnet format whitespace --folder . | needs no project or solution, works in every project",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "format",
+        "whitespace",
+        "--folder",
+        ".",
+        "--exclude",
+        "Library/",
+        "Temp/",
+        "Logs/",
+        "obj/",
+        "Build/",
+        "UserSettings/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "clear": true,
+        "echo": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task Runner: Apply Syntax Style",
+      "detail": "dotnet format style --severity info | requires <workspaceFolderBasename>.slnx at the workspace root",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "format",
+        "style",
+        "${workspaceFolder}/${workspaceFolderBasename}.slnx",
+        "--severity",
+        "info",
+        "--exclude",
+        "Library/",
+        "Temp/",
+        "Logs/",
+        "obj/",
+        "Build/",
+        "UserSettings/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "clear": true,
+        "echo": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task Runner: Reformat & Apply Syntax Style",
+      "detail": "Middle cleanup profile: Reformat Code, then Apply Syntax Style, in order",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Task Runner: Reformat Code",
+        "Task Runner: Apply Syntax Style"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Task Runner: Full Cleanup",
+      "detail": "dotnet format <sln> --severity info | whitespace + style + analyzers, in one pass",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "format",
+        "${workspaceFolder}/${workspaceFolderBasename}.slnx",
+        "--severity",
+        "info",
+        "--exclude",
+        "Library/",
+        "Temp/",
+        "Logs/",
+        "obj/",
+        "Build/",
+        "UserSettings/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "clear": true,
+        "echo": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Task Runner: Full Cleanup (verify)",
+      "detail": "Same as Full Cleanup with --verify-no-changes: writes nothing, non-zero exit code if changes are needed",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "format",
+        "${workspaceFolder}/${workspaceFolderBasename}.slnx",
+        "--severity",
+        "info",
+        "--verify-no-changes",
+        "--exclude",
+        "Library/",
+        "Temp/",
+        "Logs/",
+        "obj/",
+        "Build/",
+        "UserSettings/"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,970 @@
+# .editorconfig
+# 
+# Copyright (c) 2026 Mert Colakoglu. All rights reserved.
+#
+# Created for VS Code / Roslyn, while developing Unity / C# projects.
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most .editorconfig file
+root = true
+
+# All files
+# Microslop says we must to use space for indents
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# Don't use this shits. It's annoying
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.{json,jsonc,asmdef,asmref,inputactions}]
+indent_style = space
+indent_size = 2
+
+# Unity writes these files with 2 spaces
+[*.{meta,prefab,unity,asset,preset}]
+indent_style = space
+indent_size = 2
+
+# Unity writes these files with 2 spaces, like the other Unity data formats
+[*.{uss,uxml}]
+indent_style = space
+indent_size = 2
+
+# Shaders and their includes: C-like code, same 4 spaces as everything else
+[*.{shader,hlsl,hlslinc,cginc,glsl,glslinc,compute}]
+indent_style = space
+indent_size = 4
+
+# Dotnet code style settings
+[*.{cs,vb}]
+
+# Unused parameters: flag them all, but only as a suggestion
+dotnet_code_quality_unused_parameters = all:suggestion
+
+# Unnecessary suppressions: no exclusion list, own every #pragma
+dotnet_remove_unnecessary_suppression_exclusions = none
+#
+# IDE0079: Remove unnecessary suppression
+dotnet_diagnostic.IDE0079.severity = warning
+
+# Import directives and sort using
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = true
+#
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = warning
+
+# IDE2000/IDE2003: blank line hygiene
+#
+# No runs of blank lines, and no statement butted straight against a closing
+# brace. Both at suggestion: one keystroke each, and neither changes what the
+# compiler emits.
+dotnet_style_allow_multiple_blank_lines_experimental = false:suggestion
+dotnet_style_allow_statement_immediately_after_block_experimental = false:suggestion
+
+# Parentheses: keep the ones that actually earn their keep
+dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:suggestion
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:suggestion
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
+dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:suggestion
+
+# Keywords over framework types: int, not Int32
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+# Modern toys: collection expressions, and foreach casts only when strongly typed
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
+dotnet_style_prefer_foreach_explicit_cast_in_source = when_strongly_typed:suggestion
+
+# Terser code: auto-properties, compound assignment, ternaries over if/else
+dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+
+# IDE0221: Add explicit cast
+#
+# When a conversion happens without the cast being visible in the source, write
+# it out. Its sibling IDE0220 does the same for foreach loops.
+dotnet_style_prefer_non_hidden_explicit_cast_in_source = true:suggestion
+
+# Inferred tuple names, and 'is null' instead of ReferenceEquals
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
+dotnet_style_prefer_inferred_tuple_names = true:warning
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+
+# If the compiler can simplify it, do not spell it out
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+
+# Private fields that are assigned only inline or in a constructor should be readonly.
+dotnet_style_readonly_field = true:suggestion
+
+# Spell out the accessibility modifier, even when it is obvious
+dotnet_style_require_accessibility_modifiers = always:suggestion
+
+# No this. prefix: the compiler knows which one you meant
+dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+
+# Additional Dotnet style suggestions
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_object_initializer = true:suggestion
+
+# Additional Dotnet style for beginning of line
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+
+# IDE0070: Use 'System.HashCode.Combine'
+#
+# Hand-rolled hash arithmetic in GetHashCode is where collisions and typos
+# hide, and HashCode.Combine has been in the BCL since .NET Standard 2.1.
+dotnet_prefer_system_hash_code = true:suggestion
+
+# Naming
+
+# Naming rules, grouped for easy reading:
+# Each rule sits right above the symbol group it applies to.
+#
+#   rule    -> links a symbol group to a style and sets the severity
+#   symbols -> describes which code elements the rule is about
+#   style   -> defines the naming style (capitalization, required prefix) applied
+#              to the symbol group
+#
+# The rules are listed in the same order as the original export, which keeps
+# things easy to compare. Each rule mirrors the name of the symbol group it
+# applies to, and the naming style it enforces is defined right below that
+# group's symbols block.
+#
+# Enum members
+# Roslyn has no 'enum_member' symbol kind, so no rule is defined here.
+# Note: enum members are not reliably matched by the 'field' + 'const' rules either;
+# use an analyzer/suppressor if enum member naming must be enforced.
+#
+# public enum ExampleEnum
+# {
+#     FirstValue,
+#     SecondValue
+# }
+
+# Constants (non-private) -> PascalCase
+# Non-private const fields (public, internal, protected, protected internal, private protected).
+#
+# NOTE: 'const,static' below is deliberate: a const field is implicitly static, so it
+# also matches the non-private static-field rule. Listing both modifiers makes this an
+# intersection rule that outranks it (Microslop's documented remedy for this overlap).
+#
+# public class ExampleConstantClass
+# {
+#     public const int ExampleIntConst = 10;
+#     internal const string ExampleStringConst = "Example";
+# }
+dotnet_naming_rule.constants.symbols = constants
+dotnet_naming_rule.constants.style = constant_style
+dotnet_naming_rule.constants.severity = warning
+
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.applicable_accessibilities = public,internal,protected,protected_internal,private_protected
+dotnet_naming_symbols.constants.required_modifiers = const,static
+
+dotnet_naming_style.constant_style.capitalization = pascal_case
+
+# Private constants -> PascalCase
+# const fields that are private.
+#
+# NOTE: 'const,static' below is deliberate: a const field is implicitly static, so it
+# also matches the private static-field rule. Listing both modifiers makes this an
+# intersection rule that outranks it (Microslop's documented remedy for this overlap).
+#
+# public class ExamplePrivateConstantClass
+# {
+#     private const int ExampleIntPrivateConst = 3;
+# }
+dotnet_naming_rule.private_constants.symbols = private_constants
+dotnet_naming_rule.private_constants.style = private_constant_style
+dotnet_naming_rule.private_constants.severity = warning
+
+dotnet_naming_symbols.private_constants.applicable_kinds = field
+dotnet_naming_symbols.private_constants.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants.required_modifiers = const,static
+
+dotnet_naming_style.private_constant_style.capitalization = pascal_case
+
+# Private static readonly fields -> PascalCase
+# Private fields that are both static and readonly.
+#
+# public class ExamplePrivateStaticReadonlyClass
+# {
+#     private static readonly string ExampleStringPrivateStaticReadonly = "Example";
+# }
+dotnet_naming_rule.private_static_readonly_fields.symbols = private_static_readonly_fields
+dotnet_naming_rule.private_static_readonly_fields.style = private_static_readonly_field_style
+dotnet_naming_rule.private_static_readonly_fields.severity = warning
+
+dotnet_naming_symbols.private_static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_fields.required_modifiers = readonly,static
+
+dotnet_naming_style.private_static_readonly_field_style.capitalization = pascal_case
+
+# Non-private static readonly fields -> PascalCase
+# Static readonly fields that are public, internal, protected, protected internal or private protected.
+#
+# public class ExampleStaticReadonlyClass
+# {
+#     public static readonly int ExampleIntStaticReadonly = 30;
+# }
+dotnet_naming_rule.non_private_static_readonly_fields.symbols = non_private_static_readonly_fields
+dotnet_naming_rule.non_private_static_readonly_fields.style = non_private_static_readonly_field_style
+dotnet_naming_rule.non_private_static_readonly_fields.severity = warning
+
+dotnet_naming_symbols.non_private_static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_static_readonly_fields.applicable_accessibilities = public,internal,protected,protected_internal,private_protected
+dotnet_naming_symbols.non_private_static_readonly_fields.required_modifiers = readonly,static
+
+dotnet_naming_style.non_private_static_readonly_field_style.capitalization = pascal_case
+
+# Private static fields -> _camelCase
+# Private static fields that are not readonly.
+#
+# NOTE: Microslop's guidance is an 's_' prefix for static fields; we use the same '_'
+# prefix as private instance fields, which matches the Rider/ReSharper export.
+#
+# public class ExamplePrivateStaticFieldClass
+# {
+#     private static int _exampleIntPrivateStatic;
+# }
+dotnet_naming_rule.private_static_fields.symbols = private_static_fields
+dotnet_naming_rule.private_static_fields.style = private_static_field_style
+dotnet_naming_rule.private_static_fields.severity = warning
+
+dotnet_naming_symbols.private_static_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields.required_modifiers = static
+
+dotnet_naming_style.private_static_field_style.capitalization = camel_case
+dotnet_naming_style.private_static_field_style.required_prefix = _
+
+# Non-private static fields -> PascalCase
+# Static fields that are public, internal, protected, protected internal or private protected.
+#
+# NOTE: non-private static fields stay PascalCase here (unlike non-private instance
+# fields, which are camelCase in this file); this matches Microslop's guidance and
+# the Rider/ReSharper export.
+#
+# public class ExamplePublicStaticFieldClass
+# {
+#     public static int ExampleIntStatic;
+# }
+dotnet_naming_rule.non_private_static_fields.symbols = non_private_static_fields
+dotnet_naming_rule.non_private_static_fields.style = non_private_static_field_style
+dotnet_naming_rule.non_private_static_fields.severity = warning
+
+dotnet_naming_symbols.non_private_static_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_static_fields.applicable_accessibilities = public,internal,protected,protected_internal,private_protected
+dotnet_naming_symbols.non_private_static_fields.required_modifiers = static
+
+dotnet_naming_style.non_private_static_field_style.capitalization = pascal_case
+
+# Private instance fields -> _camelCase
+# Private fields that belong to an object (not static, not const).
+#
+# public class ExamplePrivateFieldClass
+# {
+#     private int _exampleIntField;
+#     private string _exampleStringField;
+# }
+dotnet_naming_rule.private_instance_fields.symbols = private_instance_fields
+dotnet_naming_rule.private_instance_fields.style = private_instance_field_style
+dotnet_naming_rule.private_instance_fields.severity = warning
+
+dotnet_naming_symbols.private_instance_fields.applicable_kinds = field
+dotnet_naming_symbols.private_instance_fields.applicable_accessibilities = private
+
+dotnet_naming_style.private_instance_field_style.capitalization = camel_case
+dotnet_naming_style.private_instance_field_style.required_prefix = _
+
+# Non-private readonly instance fields -> PascalCase
+# Instance fields that are public, internal, protected, protected internal or private protected
+# and readonly.
+#
+# NOTE: Unity never serializes readonly fields, so these are not Inspector state; they are fixed
+# at construction. That is the same "constant in all but keyword" reasoning the static readonly
+# rules above use, and it keeps the camelCase rule to the fields the Inspector can actually edit.
+#
+# public class ExamplePublicReadonlyFieldClass
+# {
+#     public readonly int ExampleIntReadonly;
+# }
+dotnet_naming_rule.non_private_readonly_fields.symbols = non_private_readonly_fields
+dotnet_naming_rule.non_private_readonly_fields.style = non_private_readonly_field_style
+dotnet_naming_rule.non_private_readonly_fields.severity = warning
+
+dotnet_naming_symbols.non_private_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_readonly_fields.applicable_accessibilities = public,internal,protected,protected_internal,private_protected
+dotnet_naming_symbols.non_private_readonly_fields.required_modifiers = readonly
+
+dotnet_naming_style.non_private_readonly_field_style.capitalization = pascal_case
+
+# Non-private fields -> camelCase
+# Instance fields that are public, internal, protected, protected internal or private protected.
+#
+# NOTE: Microslop's guidance (and the Rider/ReSharper export) is PascalCase for
+# public members; we deliberately use camelCase to match Unity's serialized-field
+# style, since public fields are visible in the Inspector.
+#
+# public class ExamplePublicFieldClass
+# {
+#     public int exampleIntField;
+#     protected string exampleStringField;
+# }
+dotnet_naming_rule.non_private_fields.symbols = non_private_fields
+dotnet_naming_rule.non_private_fields.style = non_private_field_style
+dotnet_naming_rule.non_private_fields.severity = warning
+
+dotnet_naming_symbols.non_private_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_fields.applicable_accessibilities = public,internal,protected,protected_internal,private_protected
+
+dotnet_naming_style.non_private_field_style.capitalization = camel_case
+
+# Types and namespaces -> PascalCase
+# Classes, structs, enums, delegates and namespaces.
+#
+# namespace ExampleCompany.ExampleProject
+# {
+#     public class ExampleClass { }
+#     public struct ExampleStruct { }
+#     public enum ExampleEnum { }
+#     public delegate void ExampleDelegate();
+# }
+dotnet_naming_rule.types_and_namespaces.symbols = types_and_namespaces
+dotnet_naming_rule.types_and_namespaces.style = type_and_namespace_style
+dotnet_naming_rule.types_and_namespaces.severity = warning
+
+dotnet_naming_symbols.types_and_namespaces.applicable_kinds = class,delegate,enum,namespace,struct
+dotnet_naming_symbols.types_and_namespaces.applicable_accessibilities = *
+
+dotnet_naming_style.type_and_namespace_style.capitalization = pascal_case
+
+# Interfaces -> IPascalCase
+# Interface names start with a capital I.
+#
+# public interface IExampleService
+# {
+#     public void ExampleMethod();
+# }
+dotnet_naming_rule.interfaces.symbols = interfaces
+dotnet_naming_rule.interfaces.style = interface_style
+dotnet_naming_rule.interfaces.severity = warning
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+
+dotnet_naming_style.interface_style.capitalization = pascal_case
+dotnet_naming_style.interface_style.required_prefix = I
+
+# Type parameters -> TPascalCase
+# Generic type parameters start with a capital T.
+#
+# public class ExampleClass<TExample, TOther>
+# {
+#     public TExample ExampleMethod(TOther exampleParameter) { ... }
+# }
+dotnet_naming_rule.type_parameters.symbols = type_parameters
+dotnet_naming_rule.type_parameters.style = type_parameter_style
+dotnet_naming_rule.type_parameters.severity = warning
+
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
+
+dotnet_naming_style.type_parameter_style.capitalization = pascal_case
+dotnet_naming_style.type_parameter_style.required_prefix = T
+
+# Methods -> PascalCase
+# Methods with any accessibility.
+#
+# public class ExampleMethodClass
+# {
+#     public void ExampleMethod() { }
+#     private int ExamplePrivateMethod() => 0;
+# }
+dotnet_naming_rule.methods.symbols = methods
+dotnet_naming_rule.methods.style = method_style
+dotnet_naming_rule.methods.severity = warning
+
+dotnet_naming_symbols.methods.applicable_kinds = method
+dotnet_naming_symbols.methods.applicable_accessibilities = *
+
+dotnet_naming_style.method_style.capitalization = pascal_case
+
+# Local functions -> PascalCase
+# Functions declared inside another method.
+#
+# public void ExampleMethod()
+# {
+#     int ExampleLocalFunction(int exampleIntParameter) => exampleIntParameter + 1;
+# }
+dotnet_naming_rule.local_functions.symbols = local_functions
+dotnet_naming_rule.local_functions.style = local_function_style
+dotnet_naming_rule.local_functions.severity = warning
+
+dotnet_naming_symbols.local_functions.applicable_kinds = local_function
+dotnet_naming_symbols.local_functions.applicable_accessibilities = *
+
+dotnet_naming_style.local_function_style.capitalization = pascal_case
+
+# Properties -> PascalCase
+# Properties with any accessibility.
+#
+# public class ExamplePropertyClass
+# {
+#     public int ExampleIntProperty { get; set; }
+#     private string ExampleStringPrivateProperty { get; set; }
+# }
+dotnet_naming_rule.properties.symbols = properties
+dotnet_naming_rule.properties.style = property_style
+dotnet_naming_rule.properties.severity = warning
+
+dotnet_naming_symbols.properties.applicable_kinds = property
+dotnet_naming_symbols.properties.applicable_accessibilities = *
+
+dotnet_naming_style.property_style.capitalization = pascal_case
+
+# Events -> PascalCase
+# Events with any accessibility.
+#
+# public class ExampleEventClass
+# {
+#     public event EventHandler ExampleEvent;
+# }
+dotnet_naming_rule.events.symbols = events
+dotnet_naming_rule.events.style = event_style
+dotnet_naming_rule.events.severity = warning
+
+dotnet_naming_symbols.events.applicable_kinds = event
+dotnet_naming_symbols.events.applicable_accessibilities = *
+
+dotnet_naming_style.event_style.capitalization = pascal_case
+
+# Locals -> camelCase
+# Variables declared inside a method.
+#
+# public void ExampleMethod()
+# {
+#     int exampleIntLocal = 0;
+#     var exampleStringLocal = "Example";
+# }
+dotnet_naming_rule.locals.symbols = locals
+dotnet_naming_rule.locals.style = local_style
+dotnet_naming_rule.locals.severity = warning
+
+dotnet_naming_symbols.locals.applicable_kinds = local
+dotnet_naming_symbols.locals.applicable_accessibilities = *
+
+dotnet_naming_style.local_style.capitalization = camel_case
+
+# Local constants -> camelCase
+# const variables declared inside a method.
+#
+# NOTE: Microslop's C# identifier naming doc says constants are PascalCase,
+# "both fields and local constants, including private and internal". We keep
+# local constants camelCase on purpose, to stay consistent with ordinary locals;
+# this matches the Rider/ReSharper export.
+#
+# public void ExampleMethod()
+# {
+#     const int exampleIntLocalConst = 10;
+# }
+dotnet_naming_rule.local_constants.symbols = local_constants
+dotnet_naming_rule.local_constants.style = local_constant_style
+dotnet_naming_rule.local_constants.severity = warning
+
+# Roslyn has no 'local_constant' symbol kind (that kind exists only in
+# Rider/ReSharper); a local constant is expressed as a 'local' with the 'const'
+# modifier.
+dotnet_naming_symbols.local_constants.applicable_kinds = local
+dotnet_naming_symbols.local_constants.applicable_accessibilities = *
+dotnet_naming_symbols.local_constants.required_modifiers = const
+
+dotnet_naming_style.local_constant_style.capitalization = camel_case
+
+# Parameters -> camelCase
+# Parameters of methods, constructors and local functions.
+#
+# NOTE: Microslop names record positional parameters in PascalCase (they become public
+# properties); this rule treats every parameter as camelCase, which is how
+# Rider/ReSharper classifies them.
+#
+# public void ExampleMethod(int exampleIntParameter, string exampleStringParameter)
+# {
+# }
+dotnet_naming_rule.parameters.symbols = parameters
+dotnet_naming_rule.parameters.style = parameter_style
+dotnet_naming_rule.parameters.severity = warning
+
+dotnet_naming_symbols.parameters.applicable_kinds = parameter
+dotnet_naming_symbols.parameters.applicable_accessibilities = *
+
+dotnet_naming_style.parameter_style.capitalization = camel_case
+
+# IDE1006: Naming rule violation
+# A naming rule's own 'severity' is respected only inside the IDE; the C# and VB
+# compilers ignore it. This global severity is what enforces naming rules on
+# build (EnforceCodeStyleInBuild) and in 'dotnet format'.
+dotnet_diagnostic.IDE1006.severity = warning
+
+# Rules with no style option of their own
+#
+# Everything above is a preference: the option carries its own severity suffix,
+# the matching IDE rule inherits it, and no line down here is needed. The rules
+# below are the opposite case: Roslyn ships no editorconfig option for them at
+# all, so 'dotnet_diagnostic.<ID>.severity' is the only lever we have.
+#
+# IDE0055, IDE0079 and IDE1006 above are the awkward middle: they do have
+# options, but those options cannot carry a severity, so each keeps a
+# dotnet_diagnostic line of its own.
+#
+# Listed in ascending IDE id order; the severity doubles as a rough sort key:
+#   warning    -> an unambiguous defect, nothing to prefer, just fix it
+#   suggestion -> worth catching in the editor, not worth a yellow squiggle
+#   none       -> deliberately off, with the reason spelled out in place
+#
+# Unity note: IDE0051 and IDE0052 stay usable only because
+# Microsoft.Unity.Analyzers suppresses the reflection-driven false positives
+# (USP0003, 0006, 0008, 0009, 0010, 0012, 0019 and USP0020). Without that
+# package they would flag every Awake/Start/Update and every [SerializeField].
+
+# IDE0001: Simplify name
+#
+# Drop the qualification the compiler can already resolve on its own.
+# Before: System.Collections.Generic.List<int> items;
+# After:  List<int> items;
+dotnet_diagnostic.IDE0001.severity = suggestion
+
+# IDE0002: Simplify member access
+#
+# Same idea for members: no need to spell out the type you are already inside.
+# Before: ExampleClass.StaticMethod();
+# After:  StaticMethod();
+dotnet_diagnostic.IDE0002.severity = suggestion
+
+# IDE0004: Remove unnecessary cast
+#
+# A cast that changes nothing. Removing it keeps the emitted IL identical.
+# Before: int count = (int)list.Count;
+# After:  int count = list.Count;
+dotnet_diagnostic.IDE0004.severity = warning
+
+# IDE0005: Remove unnecessary import
+#
+# Dead using directives slow down IntelliSense and hide real dependencies.
+# Note: on build this only surfaces when documentation file generation is on.
+# Before: using System.Text;   // nothing in the file needs it
+dotnet_diagnostic.IDE0005.severity = warning
+
+# IDE0010: Add missing cases to switch statement
+#
+# Wants every enum member spelled out. In Unity the enums keep growing, so
+# every new value would become a warning nobody asked for. Kept off.
+dotnet_diagnostic.IDE0010.severity = none
+
+# IDE0035: Remove unreachable code
+#
+# A fading-only diagnostic on top of CS0162, which the compiler already
+# reports by itself. Not configurable in practice, listed for completeness.
+# Before: return;
+#         Debug.Log("never runs");
+dotnet_diagnostic.IDE0035.severity = none
+
+# IDE0043: Invalid format string
+#
+# The placeholder index has no matching argument, so this throws at runtime.
+# Before: string.Format("{0} {1}", a);   // {1} has no argument
+# After:  string.Format("{0} {1}", a, b);
+dotnet_diagnostic.IDE0043.severity = warning
+
+# IDE0050: Convert anonymous type to tuple
+#
+# Anonymous types with two or more fields could be tuples instead. IDE-only
+# and disabled inside Roslyn itself, so there is nothing to configure here.
+dotnet_diagnostic.IDE0050.severity = none
+
+# IDE0051: Remove unused private member
+#
+# Dead private members. Unity invokes Awake/Start/Update and friends through
+# reflection, which is why Microsoft.Unity.Analyzers ships suppressors for
+# them (USP0003, 0006, 0008, 0009, 0010, 0012, 0019).
+# Before: private int _neverUsed;   // not even the Inspector reads it
+dotnet_diagnostic.IDE0051.severity = warning
+
+# IDE0052: Remove unread private member
+#
+# Written but never read. Serialized fields are read by the Inspector and
+# USP0020 covers the Unity messages, so what is left is genuinely dead.
+# Before: private int _value;
+#         void Set() => _value = 1;   // nobody ever reads _value
+dotnet_diagnostic.IDE0052.severity = warning
+
+# IDE0064: Make struct fields writable
+#
+# A struct that assigns to 'this' cannot keep readonly fields, since the
+# assignment overwrites them. Rare outside hand-written value-type tricks.
+dotnet_diagnostic.IDE0064.severity = suggestion
+
+# IDE0072: Add missing cases to switch expression
+#
+# The switch-expression twin of IDE0010, same Unity caveat about growing
+# enums. Kept as a hint instead of a warning.
+# Before: var label = state switch { State.Idle => "idle" };
+dotnet_diagnostic.IDE0072.severity = suggestion
+
+# IDE0076: Remove invalid global SuppressMessageAttribute
+#
+# Only fires in GlobalSuppressions.cs, when Scope or Target matches nothing
+# that exists. Silence is the right answer for a suppression that suppresses
+# nothing.
+dotnet_diagnostic.IDE0076.severity = warning
+
+# IDE0077: Avoid legacy format target in global SuppressMessageAttribute
+#
+# The legacy form ('MyGame.Player.#_health') still suppresses, it is just slow
+# to process (dotnet/roslyn#44362). The recommended form is the documentation
+# ID: '~F:MyGame.Player._health'. The prefix says what kind of symbol it is
+# (~T type, ~M method, ~P property, ~F field), while Scope says how wide it
+# reaches (member, type, namespace). Rewriting a target changes which symbol
+# gets suppressed, so it earns a glance rather than an alarm. Stale or
+# unresolvable targets are IDE0076's business, not this rule's.
+dotnet_diagnostic.IDE0077.severity = suggestion
+
+# IDE0080: Remove unnecessary suppression operator
+#
+# The null-forgiving '!' applied to something that is not nullable anyway.
+# Before: var name = alreadyNotNull!;
+# After:  var name = alreadyNotNull;
+dotnet_diagnostic.IDE0080.severity = warning
+
+# IDE0081: Remove ByVal
+#
+# Visual Basic only. A C# project will never see this diagnostic.
+dotnet_diagnostic.IDE0081.severity = none
+
+# IDE0082: Convert typeof to nameof
+#
+# typeof(X).Name is slower and survives a rename badly.
+# Before: Debug.Log(typeof(Player).Name);
+# After:  Debug.Log(nameof(Player));
+dotnet_diagnostic.IDE0082.severity = warning
+
+# IDE0100: Remove unnecessary equality operator
+#
+# Comparing a bool with true or false is what the bool was already for.
+# Before: if (isReady == true) { }
+# After:  if (isReady) { }
+dotnet_diagnostic.IDE0100.severity = warning
+
+# IDE0110: Remove unnecessary discard
+#
+# A discard pattern that matches everything, so the check is decoration.
+# Before: if (value is _) { Use(value); }
+# After:  Use(value);
+dotnet_diagnostic.IDE0110.severity = warning
+
+# IDE0120: Simplify LINQ expression
+#
+# Where(...).Any() walks the whole sequence; Any(predicate) stops at the first
+# match. Same story for Count() and First().
+# Before: items.Where(x => x.Alive).Any()
+# After:  items.Any(x => x.Alive)
+dotnet_diagnostic.IDE0120.severity = suggestion
+
+# IDE0121: Simplify LINQ type check and cast
+#
+# OfType<T>() does the Where plus Cast pair in one pass, without the cast.
+# Before: items.Where(x => x is Player).Cast<Player>()
+# After:  items.OfType<Player>()
+dotnet_diagnostic.IDE0121.severity = suggestion
+
+# IDE0240: Nullable directive is redundant
+#
+# A '#nullable' directive that restates the context it is already in.
+# Before: #nullable enable   // the project already enabled it
+# After:  (delete the directive)
+dotnet_diagnostic.IDE0240.severity = suggestion
+
+# IDE0241: Nullable directive is unnecessary
+#
+# The directive is legal but changes nothing, because no reference type in
+# its scope is affected by it.
+dotnet_diagnostic.IDE0241.severity = suggestion
+
+# IDE0280: Use nameof
+#
+# Null-analysis attributes take member names as strings, and a literal goes
+# stale on rename without a single compiler error.
+# Before: [NotNullIfNotNull("other")]
+# After:  [NotNullIfNotNull(nameof(other))]
+dotnet_diagnostic.IDE0280.severity = warning
+
+# IDE0370: Remove unnecessary suppression
+#
+# The '!' swallows a nullable warning that is not being produced anyway.
+# Before: var text = value!.ToString();   // nothing to suppress here
+dotnet_diagnostic.IDE0370.severity = suggestion
+
+# IDE0380: Remove unnecessary 'unsafe' modifier
+#
+# Nothing in the declaration actually needs unsafe, so the modifier only
+# spreads AllowUnsafeBlocks requirements around the project.
+# Before: unsafe void Tick() { }
+# After:  void Tick() { }
+dotnet_diagnostic.IDE0380.severity = suggestion
+
+# IDE0390: Make method synchronous
+#
+# An async method with no await pays for a state machine it never uses. Kept
+# as a suggestion because Unity event handlers and Awaitable make this noisier
+# than it is on a plain .NET codebase.
+# Before: async Task LoadAsync() { return; }
+# After:  Task LoadAsync() => Task.CompletedTask;
+dotnet_diagnostic.IDE0390.severity = suggestion
+
+# IDE0391: Make method synchronous
+#
+# The same rule aimed at interface implementations and overrides, which
+# IDE0390 deliberately leaves alone.
+dotnet_diagnostic.IDE0391.severity = suggestion
+
+# IDE1007: The name does not exist in the current context
+#
+# Internal IDE diagnostic that drives 'Add using' and 'Fully qualify'. It is
+# documented as not configurable, so the line stays commented out.
+# dotnet_diagnostic.IDE1007.severity = none
+
+# IDE3000: Implement with Copilot
+#
+# The light-bulb suggestion on a method that throws NotImplementedException.
+# It is an editor feature, not a code-style finding, so it is off.
+dotnet_diagnostic.IDE3000.severity = none
+
+# CSharp code style settings:
+[*.cs]
+
+# IDE0073: Use file header
+#
+# The header must be the first thing in the file and must match this text
+# exactly, so anything that changes per file (a creation date, an author)
+# cannot live here. '{fileName}' is the only placeholder Roslyn supports.
+# Note: the option itself cannot carry a severity, hence the line below.
+file_header_template = {fileName}\n\nCopyright (c) 2026 Mert Colakoglu. All rights reserved.
+dotnet_diagnostic.IDE0073.severity = warning
+
+# Indentation: spaces, and everything inside a block gets pushed in
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = true
+csharp_indent_switch_labels = true
+
+# Labels sit one notch to the left, where they belong
+csharp_indent_labels = one_less_than_current
+
+# New lines: braces get their own line, no exceptions
+csharp_new_line_before_catch = true
+csharp_new_line_before_else = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+
+# Braces when multiline; 'default' and 'using' without the ceremony
+csharp_prefer_braces = when_multiline:warning
+#
+# IDE0011: Add braces
+dotnet_diagnostic.IDE0011.severity = warning
+
+csharp_prefer_simple_default_expression = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+
+# static lambdas and local functions: suggested, but silent for now
+csharp_prefer_static_anonymous_function = true:none
+csharp_prefer_static_local_function = true:none
+
+# IDE0330: Prefer 'System.Threading.Lock'
+#
+# .NET 9 added System.Threading.Lock, which the lock statement understands and
+# which beats locking on a bare object. Unity's runtime does not ship it yet, so
+# this one stays quiet until the target actually has the type.
+csharp_prefer_system_threading_lock = true:suggestion
+
+# Modifier order: our pecking order, not Microslop's
+csharp_preferred_modifier_order = public, private, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, unsafe, extern, volatile, async, required:suggestion
+
+# One-liners stay one-liners; the formatter is not allowed to explode them
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+
+# Spaces: exactly where they belong, nowhere else
+csharp_space_after_cast = false
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_after_comma = true
+csharp_space_after_dot = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_around_declaration_statements = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_before_comma = false
+csharp_space_before_dot = false
+csharp_space_before_open_square_brackets = false
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_between_square_brackets = false
+
+# Styling
+
+# Styling rules, grouped for easy reading:
+# Each rule sits right above the group of keys it applies to.
+#
+#   rule       -> a 'csharp_style_*' or 'csharp_prefer_*' preference, not a law
+#   preference -> the part before the colon: true/false, or an enum value
+#   severity   -> the part after the colon: how loudly the IDE may nag
+#
+# These are IDE suggestions, every last one of them. The compiler ignores both
+# halves; the editor and 'dotnet format' honour them, and the build only joins
+# in once EnforceCodeStyleInBuild is switched on.
+#
+# 'none' switches a rule off, 'silent' keeps it on but out of your face. Here
+# both mean the same thing: the preference is written down so that nobody
+# "corrects" it later, and nothing nags us about it in the editor.
+#
+# The keys run in plain alphabetical order, unbroken, from the experimental
+# 'allow_*' switches through 'using_directive_placement'. The lone '#'
+# lines below only mark the seams in that run as it reads. Nothing here is
+# sorted by taste, so a key is either where its name says it is, or missing.
+#
+# Formatting is not styling. Indentation, new lines, spaces, braces and the
+# modifier order live in the [*.cs] block above. Everything from here on
+# answers one question only: when two spellings compile to the same IL, which
+# one do we want to read?
+#
+# csharp_style_prefer_utf8_string_literals = true:suggestion
+#                                            ^^^^ ^^^^^^^^^^
+#                                            what how loud
+#
+# Three of these deviate from the 'dotnet new editorconfig' template on purpose,
+# because we write Unity code, not framework code:
+#   - 'var' everywhere, even when the type is not obvious from the right side
+#   - expression bodies for lambdas only; methods, properties, indexers and
+#     accessors keep their braces, because a brace scans faster than an arrow
+#   - block-scoped namespaces, instead of re-indenting a whole file over one
+#     keyword
+
+# IDE2001/IDE2002/IDE2004/IDE2005/IDE2006: whitespace, the experimental half
+#
+# Keep embedded statements on their own line, ban blank lines between
+# consecutive braces, and ban them after a constructor initializer colon, a
+# conditional token or an arrow. Still flagged experimental upstream, which is
+# why they sit at suggestion rather than warning.
+csharp_style_allow_embedded_statements_on_same_line_experimental = true:suggestion
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:suggestion
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false:suggestion
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = false:suggestion
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = false:suggestion
+
+# ?.Invoke() instead of a null check and a prayer
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Deconstruct right in the declaration: var (a, b) = GetPair();
+csharp_style_deconstructed_variable_declaration = true:suggestion
+
+# Expression bodies: fine for lambdas, not for everything else
+csharp_style_expression_bodied_accessors = false:suggestion
+csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_indexers = false:suggestion
+csharp_style_expression_bodied_lambdas = false:suggestion
+csharp_style_expression_bodied_local_functions = false:suggestion
+csharp_style_expression_bodied_methods = false:suggestion
+csharp_style_expression_bodied_operators = false:suggestion
+csharp_style_expression_bodied_properties = false:suggestion
+
+# Target-typed new() and declarations inlined into using/out
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+
+# Namespaces stay block-scoped: brace yourself
+csharp_style_namespace_declarations = block_scoped:suggestion
+
+# Pattern matching beats 'as' + null check and 'is' + cast
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+
+# The modern-language sampler: index/range, not-patterns, tuple swap, primary ctors
+csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_implicitly_typed_lambda_expression = true:suggestion
+csharp_style_prefer_index_operator = true:suggestion
+csharp_style_prefer_labeled_jump_statements = true:suggestion
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_style_prefer_method_group_conversion = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:warning
+csharp_style_prefer_pattern_matching = true:suggestion
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_prefer_range_operator = true:suggestion
+csharp_style_prefer_readonly_struct = true:suggestion
+csharp_style_prefer_readonly_struct_member = true:suggestion
+csharp_style_prefer_simple_property_accessors = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_tuple_swap = true:suggestion
+
+# IDE0340: Use unbound generic type
+#
+# nameof(List<>) survives a change of type argument; nameof(List<int>) pins it
+# for no reason.
+# Before: nameof(List<int>)
+# After:  nameof(List<>)
+csharp_style_prefer_unbound_generic_type_in_nameof = true:suggestion
+
+# u8 string literals: let the compiler bake the bytes
+csharp_style_prefer_utf8_string_literals = true:suggestion
+
+# Throw as an expression, not as a statement inside braces
+csharp_style_throw_expression = true:suggestion
+
+# Unused values go into the discard: _ = Something();
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:warning
+
+# var everywhere, including where it annoys people
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+# Usings outside the namespace, and this one is an error, not a hint
+csharp_using_directive_placement = outside_namespace:error
+
+# Third-party code: compiled, never restyled
+# [Assets/Plugins/Sirenix/**/*.cs]
+# generated_code = true

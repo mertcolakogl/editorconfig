@@ -1,0 +1,15 @@
+{
+  "dotnet.backgroundAnalysis.compilerDiagnosticsScope": "fullSolution",
+  "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "fullSolution",
+  "dotnet.diagnostics.reportInformationAsHint": false,
+  "dotnet.formatting.organizeImportsOnFormat": true,
+  "[csharp]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  }
+}
